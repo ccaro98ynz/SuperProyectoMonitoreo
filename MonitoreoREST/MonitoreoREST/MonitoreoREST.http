@@ -1,0 +1,6 @@
+@MonitoreoREST_HostAddress = http://localhost:5105
+
+GET {{MonitoreoREST_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

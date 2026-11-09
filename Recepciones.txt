@@ -1,0 +1,38 @@
+CREATE TABLE recepciones (
+    id_recepcion INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id_orden_compra INTEGER NOT NULL,
+    fecha_recepcion TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    estado VARCHAR(30),
+    observaciones VARCHAR(500),
+
+    CONSTRAINT fk_recepciones_orden
+        FOREIGN KEY (id_orden_compra)
+        REFERENCES ordenes_compra(id_orden_compra)
+);
+
+CREATE TABLE recepcion_detalle (
+    id_recepcion_detalle INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id_recepcion INTEGER NOT NULL,
+    id_detalle_orden INTEGER NOT NULL,
+    cantidad_recibida NUMERIC(14,3) NOT NULL DEFAULT 0,
+    cantidad_merma NUMERIC(14,3) NOT NULL DEFAULT 0,
+    cantidad_rechazada NUMERIC(14,3) NOT NULL DEFAULT 0,
+    numero_batch VARCHAR(100),
+    estado_qa VARCHAR(30),
+    observaciones VARCHAR(500),
+
+    CONSTRAINT fk_recepcion_detalle_recepcion
+        FOREIGN KEY (id_recepcion)
+        REFERENCES recepciones(id_recepcion),
+
+    CONSTRAINT fk_recepcion_detalle_orden
+        FOREIGN KEY (id_detalle_orden)
+        REFERENCES ordenes_compra_detalle(id_detalle),
+
+    CONSTRAINT chk_cantidades_recepcion
+        CHECK (
+            cantidad_recibida >= 0 AND
+            cantidad_merma >= 0 AND
+            cantidad_rechazada >= 0
+        )
+);

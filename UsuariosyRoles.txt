@@ -1,0 +1,6 @@
+create table roles(
+rol_id integer generated always as identity primary key,
+nombre varchar(50) not null unique,
+descripcion varchar(100),
+activo boolean not null default true
+)

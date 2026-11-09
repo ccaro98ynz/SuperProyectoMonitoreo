@@ -1,0 +1,64 @@
+CREATE TABLE proveedores (
+    id_proveedor INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    codigo VARCHAR(50) NOT NULL UNIQUE,
+    nombre VARCHAR(150) NOT NULL,
+    activo BOOLEAN NOT NULL DEFAULT TRUE
+);
+CREATE TABLE proveedores_componentes (
+    id_proveedor INTEGER NOT NULL,
+    id_componente INTEGER NOT NULL,
+    precio NUMERIC(12,2),
+    codigo_proveedor VARCHAR(100),
+    activo BOOLEAN NOT NULL DEFAULT TRUE,
+
+    CONSTRAINT pk_proveedores_componentes
+        PRIMARY KEY (id_proveedor, id_componente),
+
+    CONSTRAINT fk_proveedor
+        FOREIGN KEY (id_proveedor)
+        REFERENCES public.proveedores(id_proveedor),
+
+    CONSTRAINT fk_componente
+        FOREIGN KEY (id_componente)
+        REFERENCES public.componentes(id_componente),
+
+    CONSTRAINT chk_precio
+        CHECK (precio >= 0)
+);
+CREATE TABLE ordenes_compra (
+    id_orden_compra INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    folio_orden VARCHAR(50) NOT NULL UNIQUE,
+    id_proveedor INTEGER NOT NULL,
+    fecha_orden TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    estado VARCHAR(20) NOT NULL DEFAULT 'Pendiente',
+    fecha_recibo TIMESTAMPTZ,
+    fecha_esperada_recibo TIMESTAMPTZ,
+
+    CONSTRAINT fk_ordenes_proveedores
+        FOREIGN KEY (id_proveedor)
+        REFERENCES public.proveedores(id_proveedor),
+
+    CONSTRAINT chk_estado_orden
+        CHECK (estado IN ('Pendiente', 'Recibido', 'Cancelado'))
+);
+CREATE TABLE ordenes_compra_detalle (
+    id_detalle INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id_orden_compra INTEGER NOT NULL,
+    id_componente INTEGER NOT NULL,
+    cantidad_ordenada INTEGER NOT NULL,
+    precio_unitario NUMERIC(12,2) NOT NULL,
+
+    CONSTRAINT fk_detalle_orden
+        FOREIGN KEY (id_orden_compra)
+        REFERENCES public.ordenes_compra(id_orden_compra),
+
+    CONSTRAINT fk_detalle_componente
+        FOREIGN KEY (id_componente)
+        REFERENCES public.componentes(id_componente),
+
+    CONSTRAINT chk_cantidad
+        CHECK (cantidad_ordenada > 0),
+
+    CONSTRAINT chk_precio
+        CHECK (precio_unitario >= 0)
+);

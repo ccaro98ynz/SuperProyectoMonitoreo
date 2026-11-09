@@ -1,0 +1,47 @@
+# =========================
+# REACT + TYPESCRIPT + VITE
+# =========================
+node_modules/
+dist/
+dist-ssr/
+.vite/
+coverage/
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+
+# =========================
+# ASP.NET CORE / C#
+# =========================
+bin/
+obj/
+.vs/
+.vscode/
+*.user
+*.suo
+*.rsuser
+TestResults/
+
+# Configuración local y secretos
+appsettings.Development.json
+appsettings.Local.json
+**/secrets.json
+
+# =========================
+# ARCHIVOS GENERADOS
+# =========================
+*.log
+logs/
+*.tmp
+*.cache
+
+# Imágenes subidas por usuarios
+**/wwwroot/uploads/
+
+# =========================
+# SISTEMA OPERATIVO
+# =========================
+.DS_Store
+Thumbs.db
+desktop.ini
